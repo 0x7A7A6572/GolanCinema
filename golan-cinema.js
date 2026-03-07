@@ -23,8 +23,8 @@
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        GM_deleteValue
-// @downloadURL https://raw.githubusercontent.com/0x7A7A6572/my-scripts/@main/golan-cinema.js
-// @updateURL https://raw.githubusercontent.com/0x7A7A6572/my-scripts/@main/golan-cinema.js
+// @downloadURL https://raw.githubusercontent.com/0x7A7A6572/GolanCinema/main/golan-cinema.js
+// @updateURL https://raw.githubusercontent.com/0x7A7A6572/GolanCinema/main/golan-cinema.js
 // ==/UserScript==
 
 (function() {
@@ -288,16 +288,16 @@
                   -webkit-font-smoothing: antialiased;
                   -moz-osx-font-smoothing: grayscale;
                 }
-                #TM_wrapper { position: fixed; top: 120px; left: 0; z-index: 99998; font-family: "Microsoft YaHei", sans-serif; pointer-events: none; }
-                #TM_inner { display: flex; flex-direction: row; align-items: flex-start; pointer-events: auto; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); transform: translateX(-320px); }
+                #TM_wrapper { position: fixed; top: 120px; right: 0; z-index: 99998; font-family: "Microsoft YaHei", sans-serif; pointer-events: none; }
+                #TM_inner { display: flex; flex-direction: row; align-items: flex-start; pointer-events: auto; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); transform: translateX(320px); }
                 #TM_inner.tm-open { transform: translateX(0); }
-                #TM_container { width: 320px; max-height: 80vh; overflow-y: auto; overflow-x: hidden; background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(12px); border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); border-right: none; box-shadow: -5px 5px 15px rgba(0,0,0,0.3); scrollbar-width: thin; scrollbar-color: rgba(0, 213, 221, 0.3) transparent; }
+                #TM_container { width: 320px; max-height: 80vh; overflow-y: auto; overflow-x: hidden; background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(12px); border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); border-left: none; box-shadow: -5px 5px 15px rgba(0,0,0,0.3); scrollbar-width: thin; scrollbar-color: rgba(0, 213, 221, 0.3) transparent; }
                 #TM_container::-webkit-scrollbar { width: 4px; }
                 #TM_container::-webkit-scrollbar-track { background: transparent; }
                 #TM_container::-webkit-scrollbar-thumb { background-color: rgba(255, 255, 255, 0.1); border-radius: 4px; }
                 #TM_container:hover::-webkit-scrollbar-thumb { background-color: rgba(0, 213, 221, 0.6); }
                 #TM_controls { display: flex; flex-direction: column; padding: 5px 0; background: transparent; }
-                #TMbtn_toggle { width: 50px; height: 50px; border: none; outline: none; cursor: pointer; border-radius: 0 8px 8px 0; background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); border-left: none; display: flex; align-items: center; justify-content: center; box-shadow: 2px 2px 8px rgba(0,0,0,0.2); transition: background 0.3s; padding: 0; }
+                #TMbtn_toggle { width: 50px; height: 50px; border: none; outline: none; cursor: pointer; border-radius: 8px 0 0 8px; background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); border-right: none; display: flex; align-items: center; justify-content: center; box-shadow: 2px 2px 8px rgba(0,0,0,0.2); transition: background 0.3s; padding: 0; }
                 #TMbtn_toggle:hover { background: rgba(50, 50, 50, 0.95); }
                 #TM_list { list-style: none; margin: 0; padding: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
                 #TM_list li a { display: block; padding: 8px 5px; color: #e0e0e0; text-decoration: none; font-size: 13px; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; transition: all 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; background: rgba(255,255,255,0.05); }
@@ -375,13 +375,13 @@
             const htmlStructure = `
                 <div id="TM_wrapper">
                     <div id="TM_inner">
-                        <div id="TM_container">
-                            <ul id="TM_list"></ul>
-                        </div>
                         <div id="TM_controls">
                             <button id="TMbtn_toggle" title="展开/收起备用接口">
                                 <i class="iconfont" style="font-size: 32px; color: #00d5d3;">&#xe601;</i>
                             </button>
+                        </div>
+                        <div id="TM_container">
+                            <ul id="TM_list"></ul>
                         </div>
                     </div>
                 </div>
