@@ -276,10 +276,10 @@
         injectStyles() {
             GM_addStyle(`
                 @font-face {
-                  font-family: 'iconfont';
-                  src: url('//at.alicdn.com/t/c/font_5134748_a82y9jjh01k.woff2?t=1772900976252') format('woff2'),
-                       url('//at.alicdn.com/t/c/font_5134748_a82y9jjh01k.woff?t=1772900976252') format('woff'),
-                       url('//at.alicdn.com/t/c/font_5134748_a82y9jjh01k.ttf?t=1772900976252') format('truetype');
+                  font-family: 'iconfont';  /* Project id 5134748 */
+                  src: url('//at.alicdn.com/t/c/font_5134748_ltvrkvc21sp.woff2?t=1772913483442') format('woff2'),
+                       url('//at.alicdn.com/t/c/font_5134748_ltvrkvc21sp.woff?t=1772913483442') format('woff'),
+                       url('//at.alicdn.com/t/c/font_5134748_ltvrkvc21sp.ttf?t=1772913483442') format('truetype');
                 }
                 .iconfont {
                   font-family: "iconfont" !important;
@@ -297,15 +297,17 @@
                 #TM_container::-webkit-scrollbar-thumb { background-color: rgba(255, 255, 255, 0.1); border-radius: 4px; }
                 #TM_container:hover::-webkit-scrollbar-thumb { background-color: rgba(0, 213, 221, 0.6); }
                 #TM_controls { display: flex; flex-direction: column; padding: 5px 0; background: transparent; }
-                #TMbtn_toggle { width: 50px; height: 50px; border: none; outline: none; cursor: pointer; border-radius: 8px 0 0 8px; background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); border-right: none; display: flex; align-items: center; justify-content: center; box-shadow: 2px 2px 8px rgba(0,0,0,0.2); transition: background 0.3s; padding: 0; }
+                #TMbtn_toggle { color: #00d5d3; width: 50px; height: 50px; border: none; outline: none; cursor: pointer; border-radius: 8px 0 0 8px; background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); border-right: none; display: flex; align-items: center; justify-content: center; box-shadow: 2px 2px 8px rgba(0,0,0,0.2); transition: background 0.3s; padding: 0; }
                 #TMbtn_toggle:hover { background: rgba(50, 50, 50, 0.95); }
-                #TM_list { list-style: none; margin: 0; padding: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+                .tm-open #TMbtn_toggle { background: #00d5d3; color: #000; }
+                #TM_list { list-style: none; margin: 0; padding: 10px; padding-top: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
                 #TM_list li a { display: block; padding: 8px 5px; color: #e0e0e0; text-decoration: none; font-size: 13px; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; transition: all 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; background: rgba(255,255,255,0.05); }
                 #TM_list li a:hover { background: rgba(255,255,255,0.15); color: #fff; border-color: #00d5d3; transform: translateY(-1px); }
                 #TM_list li a.active { background: rgba(0, 213, 221, 0.2); color: #00d5d3; border-color: #00d5d3; }
                 #TM_list li.tm-manager-item { grid-column: 1 / -1; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 5px; position: sticky; top: -10px; z-index: 10; background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(12px); padding: 5px 0; }
                 #TM_list li.tm-manager-item a { color: #aaa; font-size: 13px; text-align: center; border: none; background: transparent; }
                 #TM_list li.tm-manager-item a:hover { color: #fff; background: rgba(0, 213, 221, 0.1); }
+                #TM_list li.tm-manager-item a .iconfont { font-size: 18px; }
 
                 /* Modal Styles */
                 #TM_modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 100000; justify-content: center; align-items: center; }
@@ -344,11 +346,11 @@
 
                 .tm-info { flex: 1; overflow: hidden; }
                 .tm-name { color: #eee; font-size: 14px; font-weight: bold; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-                .tm-url { color: #888; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: monospace; }
+                .tm-url { color: #888; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: monospace; }
                 
-                .tm-btn-delete { background: none; border: none; color: #ff4444; font-size: 20px; cursor: pointer; padding: 0 5px; margin-left: 10px; opacity: 0.6; transition: 0.2s; }
+                .tm-btn-delete { background: #fb58587d; display: flex;padding: 5px; border-radius: 4px; border: none; color: white; font-size: 34px; cursor: pointer; margin-left: 10px; transition: 0.2s; }
                 .tm-btn-delete:hover { opacity: 1; transform: scale(1.2); }
-                .tm-btn-pin { background: none; border: none; color: #00d5d3; font-size: 18px; cursor: pointer; padding: 0 5px; margin-left: 5px; opacity: 0.6; transition: 0.2s; }
+                .tm-btn-pin { display: flex; align-items: center; justify-content: center; background: none; border: none; color: #00d5d3; font-size: 22px; cursor: pointer; padding: 5px; margin-left: 5px; opacity: 0.6; transition: 0.2s; }
                 .tm-btn-pin:hover { opacity: 1; transform: scale(1.2); }
 
                 .tm-modal-footer { padding: 15px 20px; border-top: 1px solid rgba(255,255,255,0.1); background: #333; display: flex; justify-content: space-between; flex-shrink: 0; }
@@ -377,7 +379,7 @@
                     <div id="TM_inner">
                         <div id="TM_controls">
                             <button id="TMbtn_toggle" title="展开/收起备用接口">
-                                <i class="iconfont" style="font-size: 32px; color: #00d5d3;">&#xe601;</i>
+                                <i class="iconfont" style="font-size: 32px;">&#xe601;</i>
                             </button>
                         </div>
                         <div id="TM_container">
@@ -418,13 +420,27 @@
             const listEl = document.getElementById('TM_list');
             if(!listEl) return;
             
-            let html = `<li class="tm-manager-item" style="display:flex; gap:5px; padding-right:5px;">
-                <a href="javascript:void(0)" id="TM_btn_manage" style="flex:1;"><i class="iconfont">&#xe824;</i> 管理接口</a>
-                <a href="https://github.com/0x7A7A6572/GolanCinema" target="_blank" title="GitHub" style="width:auto; padding:0 12px; display:flex; align-items:center; justify-content:center;">
+            let html = `<li class="tm-manager-item" style="display:flex; justify-content:flex-end; gap:5px; padding-right:5px;">
+            <view style="
+                display: flex;
+                align-items: center;
+                color: white;
+                flex: 1;
+                font-size: larger;
+                font-weight: bold;
+                font-family: auto;
+                background: linear-gradient(45deg, #00d5d3, transparent 32%);
+                padding-left: 10px;
+                border-radius: 7px;
+                border-bottom-left-radius: 0;
+            ">Golan Cinema
+            </view>
+            <a href="https://github.com/0x7A7A6572/GolanCinema" target="_blank" title="GitHub" style="width:auto; padding:0 12px; display:flex; align-items:center; justify-content:center;">
                     <svg height="16" width="16" viewBox="0 0 16 16" version="1.1" style="fill:currentColor;">
                         <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
                     </svg>
                 </a>
+                <a href="javascript:void(0)" id="TM_btn_manage"><i class="iconfont">&#xe842;</i></a>
             </li>`;
             
             const enabled = this.configManager.config.parserList.filter(p => p.enabled).sort((a, b) => {
@@ -439,7 +455,7 @@
                 enabled.forEach((p) => {
                     const isSelected = this.selectedParserUrl === p.url;
                     const className = isSelected ? 'tm-parse-link active' : 'tm-parse-link';
-                    html += `<li><a href="javascript:void(0)" class="${className}" data-url="${p.url}" title="使用 ${p.name} 解析">${p.pinned ? '<i class="iconfont">&#xe863;</i> ' : ''}${p.name}</a></li>`;
+                    html += `<li><a href="javascript:void(0)" class="${className}" data-url="${p.url}" title="使用 ${p.name} 解析">${p.pinned ? '<i class="iconfont" style="color:#00d5d3;">&#xe863;</i> ' : ''}${p.name}</a></li>`;
                 });
             }
             
@@ -531,10 +547,10 @@
                     </div>
 
                     <div class="tm-divider"></div>
-                    <h4 style="color:#eee; margin:10px 20px;">站点匹配规则</h4>
+                    <h4 style="color:#eee; margin:10px 20px;"><i class="iconfont" style="margin-right:5px;">&#xe824;</i> 站点视频窗口元素匹配规则</h4>
                     
                     <div class="tm-add-section">
-                        <input type="text" id="new-host" placeholder="域名关键词 (如 iqiyi.com)" class="tm-input">
+                        <input type="text" id="new-host" placeholder="域名关键词 (如 iqiyi.com)" class="tm-input" value="${window.location.hostname}">
                         <input type="text" id="new-selector" placeholder="播放器元素选择器 (如 #flashbox)" class="tm-input">
                         <button id="tm-btn-add-selector" class="tm-btn-add">+ 添加/更新</button>
                     </div>
@@ -554,6 +570,7 @@
                                 </div>
                                 <div class="tm-url">${s.selector}</div>
                             </div>
+                            <button class="tm-btn-pin tm-action-edit-selector" data-index="${index}" title="编辑"><i class="iconfont">&#xe84f;</i></button>
                             <button class="tm-btn-delete tm-action-delete-selector" data-index="${index}" title="删除"><i class="iconfont">&#xe839;</i></button>
                         </div>
                     `;
@@ -606,6 +623,14 @@
                 };
                 document.getElementById('tm-btn-add-selector').onclick = () => this.addSelector();
                 
+                document.querySelectorAll('.tm-action-edit-selector').forEach(el => {
+                    el.onclick = (e) => {
+                        const index = parseInt(el.getAttribute('data-index'));
+                        const item = this.configManager.config.siteSelectors[index];
+                        document.getElementById('new-host').value = item.host;
+                        document.getElementById('new-selector').value = item.selector;
+                    };
+                });
                 document.querySelectorAll('.tm-action-delete-selector').forEach(el => {
                     el.onclick = (e) => this.deleteSelector(parseInt(el.getAttribute('data-index')));
                 });
