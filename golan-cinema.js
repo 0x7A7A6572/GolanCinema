@@ -53,17 +53,11 @@
 
     // Default Site Selectors (For Embedded Playback)
     const DEFAULT_SELECTORS = [
-        { host: 'iqiyi.com', selector: '#flashbox' },
-        { host: 'v.qq.com', selector: '#mod_player' },
-        { host: 'le.com', selector: '#player' },
-        { host: 'youku.com', selector: '#player' },
-        { host: 'mgtv.com', selector: '#mgtv-player-wrap' },
-        { host: 'sohu.com', selector: '#player' },
-        { host: 'bilibili.com', selector: '#player_module,#bilibili-player' },
-        { host: 'acfun.cn', selector: '#player' },
-        { host: '1905.com', selector: '#player' },
-        { host: 'pptv.com', selector: '#pptv-player' },
-        { host: 'wasu.cn', selector: '#player' },
+        { host: 'iqiyi.com', selector: '#areaLeftContainer' },
+        { host: 'v.qq.com', selector: '.container-player' },
+        { host: 'le.com', selector: '.le_playbox' },
+        { host: 'youku.com', selector: '.player-container' },
+        { host: 'bilibili.com', selector: '#player_module,#bilibili-player' }
     ];
 
     // ================= Utilities =================
@@ -249,8 +243,9 @@
                 playerNode.innerHTML = '';
                 playerNode.appendChild(iframe);
             } else {
-                alert('未找到视频播放窗口元素，将使用新窗口打开。');
-                this.openNewWindow(fullUrl);
+                if(confirm('未找到视频播放窗口元素，将使用新窗口打开。')){
+                    this.openNewWindow(fullUrl);
+                }
             }
         }
 
