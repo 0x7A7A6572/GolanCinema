@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        勾栏观影 - Golan Cinema
 // @namespace    videoParser_Ultimate_Manager
-// @version      1.0.1
+// @version      1.0.2
 // @description  【勾栏听曲，闲坐看戏】漫步瓦舍勾栏，笑看人间大戏。无需碎银几两，亦可入座观影。
 // @author       zzerx
 // @match        *://*.iqiyi.com/v_*
@@ -309,6 +309,20 @@
                 #TM_list li.tm-manager-item a:hover { color: #fff; background: rgba(0, 213, 221, 0.1); }
                 #TM_list li.tm-manager-item a .iconfont { font-size: 18px; }
 
+                .tm-parse-link { position: relative; }
+                .pinned-top::before {
+                    content: "";
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    width: 16px;
+                    height: 15px;
+                    background: linear-gradient(133deg, #00d2d0 50%, #00fffd00 50%);
+                } 
+                .tm-manage-row.pinned-top {
+                  background: rgba(0, 213, 221, 0.05);
+                }
+
                 /* Modal Styles */
                 #TM_modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 100000; justify-content: center; align-items: center; }
                 .tm-modal-panel { background: #2b2b2b; width: 500px; max-width: 95%; max-height: 85vh; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; overflow: hidden; animation: tmFadeIn 0.3s ease; }
@@ -320,10 +334,10 @@
                 .tm-modal-close:hover { color: #fff; }
                 
                 .tm-add-section { padding: 15px 20px; background: #383838; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; flex-shrink: 0; }
-                .tm-input { flex: 1; min-width: 120px; padding: 8px 12px; background: #222; border: 1px solid #444; color: #eee; border-radius: 6px; font-size: 13px; outline: none; }
-                .tm-input:focus { border-color: #00d5d3; }
+                .tm-input { flex: 1; min-width: 120px; padding: 8px 12px; background: #222 !important; border: 1px solid #444 !important; color: #eee !important; border-radius: 6px !important; font-size: 13px !important; outline: none !important; height: auto !important; line-height: normal !important; box-shadow: none !important; margin: 0 !important; }
+                .tm-input:focus { border-color: #00d5d3 !important; }
                 .tm-btn-add { padding: 8px 16px; background: #444; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; transition: 0.2s; white-space: nowrap; }
-                .tm-btn-add:hover { background: #00d5d3; color: #000; }
+                .tm-btn-add:hover { background: #818181ff; color: #000; }
 
                 .tm-modal-body { padding: 0; overflow-y: auto; flex: 1; min-height: 0; scrollbar-width: thin; scrollbar-color: rgba(0, 213, 221, 0.3) transparent; }
                 .tm-modal-body::-webkit-scrollbar { width: 6px; }
@@ -332,25 +346,25 @@
                 .tm-modal-body:hover::-webkit-scrollbar-thumb { background-color: rgba(0, 213, 221, 0.6); }
                 #tm-manage-list { display: flex; flex-direction: column; }
                 
-                .tm-manage-row { display: flex; align-items: center; padding: 10px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s; }
+                .tm-manage-row { position: relative; display: flex; align-items: center; padding: 10px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s; }
                 .tm-manage-row:hover { background: rgba(255,255,255,0.03); }
                 .tm-manage-row.disabled { opacity: 0.5; }
                 .tm-manage-row.disabled .tm-name { text-decoration: line-through; color: #777; }
                 
-                .tm-switch-label { position: relative; display: inline-block; width: 34px; height: 20px; margin-right: 15px; flex-shrink: 0; }
-                .tm-switch-label input { opacity: 0; width: 0; height: 0; }
+                .tm-switch-label { position: relative; display: inline-block; width: 34px; height: 20px; margin-left: 15px; flex-shrink: 0; }
+                .tm-switch-label input { opacity: 0; width: 0; height: 0; margin-right: 5px; }
                 .tm-switch-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #555; transition: .4s; border-radius: 20px; }
                 .tm-switch-slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-                input:checked + .tm-switch-slider { background-color: #00d5d3; }
+                input:checked + .tm-switch-slider { background-color: #00d5d38c; }
                 input:checked + .tm-switch-slider:before { transform: translateX(14px); }
 
                 .tm-info { flex: 1; overflow: hidden; }
                 .tm-name { color: #eee; font-size: 14px; font-weight: bold; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
                 .tm-url { color: #888; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: monospace; }
                 
-                .tm-btn-delete { background: #fb58587d; display: flex;padding: 5px; border-radius: 4px; border: none; color: white; font-size: 34px; cursor: pointer; margin-left: 10px; transition: 0.2s; }
+                .tm-btn-delete { display: flex;padding: 5px; border-radius: 4px; border: none; color: white; font-size: 34px; cursor: pointer; margin-left: 10px; transition: 0.2s; }
                 .tm-btn-delete:hover { opacity: 1; transform: scale(1.2); }
-                .tm-btn-pin { display: flex; align-items: center; justify-content: center; background: none; border: none; color: #00d5d3; font-size: 22px; cursor: pointer; padding: 5px; margin-left: 5px; opacity: 0.6; transition: 0.2s; }
+                .tm-btn-pin { display: flex; align-items: center; justify-content: center; background: none; border: none; color: white; font-size: 22px; cursor: pointer; padding: 5px; margin-left: 5px; opacity: 0.6; transition: 0.2s; }
                 .tm-btn-pin:hover { opacity: 1; transform: scale(1.2); }
 
                 .tm-modal-footer { padding: 15px 20px; border-top: 1px solid rgba(255,255,255,0.1); background: #333; display: flex; justify-content: space-between; flex-shrink: 0; }
@@ -454,8 +468,9 @@
             } else {
                 enabled.forEach((p) => {
                     const isSelected = this.selectedParserUrl === p.url;
+                    const pinnedStyle = p.pinned ? ' pinned-top' : '';
                     const className = isSelected ? 'tm-parse-link active' : 'tm-parse-link';
-                    html += `<li><a href="javascript:void(0)" class="${className}" data-url="${p.url}" title="使用 ${p.name} 解析">${p.pinned ? '<i class="iconfont" style="color:#00d5d3;">&#xe863;</i> ' : ''}${p.name}</a></li>`;
+                    html += `<li><a href="javascript:void(0)" class="${className}" data-url="${p.url}" title="使用 ${p.name} 解析"><span class="${pinnedStyle}">${p.name}</span></a></li>`;
                 });
             }
             
@@ -517,18 +532,19 @@
 
                 sortedList.forEach((p) => {
                     const index = p.originalIndex;
+                    const pinnedStyle = p.pinned ? ' pinned-top' : '';
                     html += `
-                        <div class="tm-manage-row ${p.enabled ? '' : 'disabled'}">
+                        <div class="tm-manage-row ${p.enabled ? '' : 'disabled'} ${pinnedStyle}">
+                            <div class="tm-info">
+                                <div class="tm-name">${p.name}</div>
+                                <div class="tm-url">${p.url}</div>
+                            </div>
+                            <button class="tm-btn-pin tm-action-pin" data-index="${index}" title="${p.pinned ? '取消置顶' : '置顶'}"><i class="iconfont">&#xe863;</i></button>
+                            <button class="tm-btn-delete tm-action-delete-parser" data-index="${index}" title="删除"><i class="iconfont">&#xe83a;</i></button>
                             <label class="tm-switch-label">
                                 <input type="checkbox" ${p.enabled ? 'checked' : ''} class="tm-action-toggle" data-index="${index}">
                                 <span class="tm-switch-slider"></span>
                             </label>
-                            <div class="tm-info">
-                                <div class="tm-name">${p.pinned ? '<i class="iconfont">&#xe863;</i> ' : ''}${p.name}</div>
-                                <div class="tm-url">${p.url}</div>
-                            </div>
-                            <button class="tm-btn-pin tm-action-pin" data-index="${index}" title="${p.pinned ? '取消置顶' : '置顶'}">${p.pinned ? '<i class="iconfont">&#xe83c;</i>' : '<i class="iconfont">&#xe83b;</i>'}</button>
-                            <button class="tm-btn-delete tm-action-delete-parser" data-index="${index}" title="删除"><i class="iconfont">&#xe839;</i></button>
                         </div>
                     `;
                 });
@@ -571,7 +587,7 @@
                                 <div class="tm-url">${s.selector}</div>
                             </div>
                             <button class="tm-btn-pin tm-action-edit-selector" data-index="${index}" title="编辑"><i class="iconfont">&#xe84f;</i></button>
-                            <button class="tm-btn-delete tm-action-delete-selector" data-index="${index}" title="删除"><i class="iconfont">&#xe839;</i></button>
+                            <button class="tm-btn-delete tm-action-delete-selector" data-index="${index}" title="删除"><i class="iconfont">&#xe83a;</i></button>
                         </div>
                     `;
                 });
