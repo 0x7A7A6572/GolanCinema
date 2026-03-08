@@ -1,28 +1,34 @@
 # 勾栏观影 - Golan Cinema
 
-这是一个 Tampermonkey (篡改猴) 脚本框架，用于管理和调用自定义的视频解析接口。本工具仅提供界面框架，不包含任何具体的解析功能，支持用户自行添加、删除、启用和禁用接口。
+这是一个浏览器脚本/扩展框架，用于管理和调用自定义的视频解析接口。本工具仅提供界面框架，不包含任何具体的解析功能，支持用户自行添加、删除、启用和禁用接口。
+
+**兼容性更新：** 本项目代码现已同时支持作为 **Tampermonkey 脚本** 或 **Microsoft Edge / Chrome 原生扩展** 运行。
 
 ## 功能特点
 
 *   **多平台支持**：脚本框架适配爱奇艺、优酷、腾讯视频、B站 等主流视频网站页面。
 *   **接口管理**：可以自由添加、删除或修改自定义接口。
+*   **双模式运行**：
+    *   **Extension 模式**：作为原生浏览器扩展安装，无需第三方插件。
+    *   **Userscript 模式**：作为 Tampermonkey 脚本安装，兼容性强。
 
+## 安装方法 (二选一)
 
-## 前置要求 (必读)
+### 方法一：Microsoft Edge / Chrome 原生扩展 (推荐)
 
-**本脚本需要搭配用户脚本管理器使用。**
+1.  下载本项目源代码。
+2.  打开浏览器扩展管理页面：
+    *   Edge: `edge://extensions/`
+    *   Chrome: `chrome://extensions/`
+3.  开启右上角的 **"开发者模式" (Developer mode)**。
+4.  点击 **"加载解压缩的扩展" (Load unpacked)**。
+5.  选择本项目所在的文件夹。
 
-请先在您的浏览器中安装 **Tampermonkey (篡改猴)** 插件：
-
-*   [Chrome 篡改猴](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)
-*   [Firefox 篡改猴](https://addons.mozilla.org/zh-CN/firefox/addon/tampermonkey/)
-*   [Edge 篡改猴](https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpaadaobahmlepeloendndfphd)
-
-## 安装步骤
+### 方法二：Tampermonkey 脚本
 
 1.  确保已安装 **Tampermonkey (篡改猴)** 插件。
 2.  点击浏览器右上角的 Tampermonkey 图标，选择“添加新脚本” (Create a new script)。
-3.  将本项目中的 `golan-cinema.js` 文件代码完整复制。
+3.  将本项目中的 `golan-main.js` 文件代码完整复制。
 4.  在 Tampermonkey 编辑器中全选并覆盖原有内容，粘贴刚才复制的代码。
 5.  按下 `Ctrl+S` 保存脚本。
 

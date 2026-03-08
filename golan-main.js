@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        勾栏观影 - Golan Cinema
 // @namespace    videoParser_Ultimate_Manager
-// @version      1.0.2
+// @version      1.1.0
 // @description  【勾栏听曲，闲坐看戏】漫步瓦舍勾栏，笑看人间大戏。无需碎银几两，亦可入座观影。
 // @author       zzerx
 // @match        *://*.iqiyi.com/v_*
@@ -23,14 +23,17 @@
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        GM_deleteValue
-// @downloadURL https://raw.githubusercontent.com/0x7A7A6572/GolanCinema/main/golan-cinema.js
-// @updateURL https://raw.githubusercontent.com/0x7A7A6572/GolanCinema/main/golan-cinema.js
+// @grant        unsafeWindow
+// @downloadURL https://raw.githubusercontent.com/0x7A7A6572/GolanCinema/main/golan-main.js
+// @updateURL https://raw.githubusercontent.com/0x7A7A6572/GolanCinema/main/golan-main.js
 // ==/UserScript==
 
 (function() {
     'use strict';
 
-    // ================= Configuration & Constants =================
+    // ================= Environment Detection =================
+    const IS_GM = typeof GM_getValue !== 'undefined';
+    const WIN = (typeof unsafeWindow !== 'undefined') ? unsafeWindow : window;
     const STORAGE_KEY = 'VIP_PARSER_CUSTOM_DATA_V5';
     
     // Default Interface Library (Factory Reset Benchmark)
@@ -71,76 +74,160 @@
         error: (...args) => console.error('[VIP Parser Error]:', ...args)
     };
 
+    function addStyle(css) {
+        const style = document.createElement('style');
+        style.textContent = css;
+        (document.head || document.documentElement).appendChild(style);
+    }
+
+    // ================= Core Logic: Storage Service =================
+    class StorageService {
+        constructor() {
+            this.isGM = IS_GM;
+        }
+
+        async load() {
+            if (this.isGM) {
+                return new Promise((resolve) => {
+                    const raw = GM_getValue(STORAGE_KEY);
+                    let data = null;
+                    if (raw) {
+                        try {
+                            data = JSON.parse(raw);
+                        } catch (e) {
+                            Logger.error('GM_getValue parse error', e);
+                        }
+                    }
+                    resolve(data);
+                });
+            } else {
+                return new Promise((resolve) => {
+                    const handler = (event) => {
+                        if (event.source !== window) return;
+                        if (event.data.type === 'GOLAN_DATA_RESPONSE') {
+                            window.removeEventListener('message', handler);
+                            resolve(event.data.payload);
+                        }
+                    };
+                    window.addEventListener('message', handler);
+                    window.postMessage({ type: 'GOLAN_LOAD_REQUEST' }, '*');
+                    
+                    // Fallback timeout in case bridge is missing
+                    setTimeout(() => {
+                        window.removeEventListener('message', handler);
+                        resolve(null);
+                    }, 1000);
+                });
+            }
+        }
+
+        save(data) {
+            if (this.isGM) {
+                try {
+                    GM_setValue(STORAGE_KEY, JSON.stringify(data));
+                } catch (e) {
+                    Logger.error('GM_setValue error:', e);
+                }
+            } else {
+                window.postMessage({ 
+                    type: 'GOLAN_SAVE_REQUEST', 
+                    payload: data 
+                }, '*');
+            }
+        }
+
+        reset() {
+            if (this.isGM) {
+                GM_deleteValue(STORAGE_KEY);
+                location.reload();
+            } else {
+                window.postMessage({ type: 'GOLAN_RESET_REQUEST' }, '*');
+                location.reload(); 
+            }
+        }
+    }
+
     // ================= Core Logic: Data Management =================
     class ConfigManager {
         constructor() {
-            this.config = this.loadData();
-        }
-
-        loadData() {
-            let config = {
+            this.storage = new StorageService();
+            // Initial default config
+            this.config = {
                 parserList: DEFAULT_PRESET.map(p => ({ ...p, enabled: true })),
                 embedPlay: true,
                 siteSelectors: JSON.parse(JSON.stringify(DEFAULT_SELECTORS))
             };
-            
+        }
+
+        async init() {
             try {
-                // Prioritize GM storage, fallback to localStorage (backward compatibility)
-                let raw = GM_getValue(STORAGE_KEY);
-                if (!raw) {
-                    raw = localStorage.getItem(STORAGE_KEY);
-                }
-
-                if (raw) {
-                    const data = JSON.parse(raw);
-                    // Backward compatibility (old versions only stored list)
-                    let loadedList = [];
-                    if (data.list && Array.isArray(data.list)) {
-                        loadedList = data.list;
-                    } else if (data.parserList && Array.isArray(data.parserList)) {
-                        loadedList = data.parserList;
+                const data = await this.storage.load();
+                if (data) {
+                    this.mergeConfig(data);
+                } else {
+                    // Fallback: Try to migrate from localStorage (Legacy)
+                    try {
+                        const localRaw = localStorage.getItem(STORAGE_KEY);
+                        if (localRaw) {
+                            console.log('[VIP Parser] Migrating data from localStorage...');
+                            this.mergeConfig(localRaw);
+                            this.saveData(); 
+                        }
+                    } catch(e) {
+                        console.warn('[VIP Parser] localStorage migration failed:', e);
                     }
-
-                    // Filter out null/undefined values
-                    if (loadedList.length > 0) {
-                        config.parserList = loadedList.filter(p => p !== null && p !== undefined);
-                    }
-                    
-                    if (typeof data.embedPlay === 'boolean') config.embedPlay = data.embedPlay;
-                    if (data.siteSelectors && Array.isArray(data.siteSelectors)) config.siteSelectors = data.siteSelectors;
                 }
             } catch (e) {
-                Logger.error('Load data error:', e);
+                Logger.error('Init config error:', e);
             }
-            return config;
+        }
+
+        // loadData method removed, using StorageService instead
+
+        mergeConfig(raw) {
+             if (!raw) return;
+             
+             let data;
+             try {
+                 if (typeof raw === 'string') {
+                     data = JSON.parse(raw);
+                 } else {
+                     data = raw;
+                 }
+             } catch (e) {
+                 Logger.error('Parse config error:', e);
+                 return;
+             }
+
+            // Backward compatibility
+            let loadedList = [];
+            if (data.list && Array.isArray(data.list)) {
+                loadedList = data.list;
+            } else if (data.parserList && Array.isArray(data.parserList)) {
+                loadedList = data.parserList;
+            }
+
+            if (loadedList.length > 0) {
+                this.config.parserList = loadedList.filter(p => p !== null && p !== undefined);
+            }
+            
+            if (typeof data.embedPlay === 'boolean') this.config.embedPlay = data.embedPlay;
+            if (data.siteSelectors && Array.isArray(data.siteSelectors)) this.config.siteSelectors = data.siteSelectors;
         }
 
         saveData() {
-            const dataStr = JSON.stringify({
+            const dataToSave = {
                 parserList: this.config.parserList,
                 embedPlay: this.config.embedPlay,
                 siteSelectors: this.config.siteSelectors,
                 version: 2
-            });
-
-            try {
-                GM_setValue(STORAGE_KEY, dataStr);
-            } catch (e) {
-                Logger.error('GM_setValue error:', e);
-            }
-
-            try {
-                localStorage.setItem(STORAGE_KEY, dataStr);
-            } catch (e) {
-                console.warn('[VIP Parser] localStorage save error (backup):', e);
-            }
+            };
+            this.storage.save(dataToSave);
         }
 
         resetData() {
             if(confirm('确定要重置所有配置吗？\n这将删除你添加的所有自定义接口和设置，并恢复默认状态。')) {
-                GM_deleteValue(STORAGE_KEY);
-                localStorage.removeItem(STORAGE_KEY);
-                location.reload(); 
+                this.storage.reset();
             }
         }
     }
@@ -165,11 +252,13 @@
 
         preload() {
             try {
-                if(window.Q && window.Q.PageInfo && window.Q.PageInfo.playPageInfo && window.Q.PageInfo.playPageInfo.albumId !== undefined ){
+                // Accessing window.Q directly since we are in MAIN world now
+                // Use WIN for safe access in both environments
+                if(WIN.Q && WIN.Q.PageInfo && WIN.Q.PageInfo.playPageInfo && WIN.Q.PageInfo.playPageInfo.albumId !== undefined ){
                     const s = document.createElement("script");
                     const el = document.getElementsByTagName("script")[0];
                     s.async = false;
-                    s.src = document.location.protocol + "//cache.video.qiyi.com/jp/avlist/"+ window.Q.PageInfo.playPageInfo.albumId +"/1/50/";
+                    s.src = document.location.protocol + "//cache.video.qiyi.com/jp/avlist/"+ WIN.Q.PageInfo.playPageInfo.albumId +"/1/50/";
                     if(el && el.parentNode) el.parentNode.insertBefore(s, el);
                 }
             } catch(e) { Logger.log('IQIYI Preload Error', e); }
@@ -184,8 +273,9 @@
                 
                 if(ele !== undefined ){
                     const pd = ele.parentNode.getAttribute('data-pd');
-                    if(pd > 0 && window.tvInfoJs && window.tvInfoJs.data && window.tvInfoJs.data.vlist){
-                        const vinfo = window.tvInfoJs.data.vlist[pd-1];
+                    // Accessing window.tvInfoJs directly
+                    if(pd > 0 && WIN.tvInfoJs && WIN.tvInfoJs.data && WIN.tvInfoJs.data.vlist){
+                        const vinfo = WIN.tvInfoJs.data.vlist[pd-1];
                         if(vinfo && vinfo.vurl && vinfo.vurl.length > 0) currentUrl = vinfo.vurl;
                     }
                 }
@@ -274,7 +364,7 @@
         }
 
         injectStyles() {
-            GM_addStyle(`
+            addStyle(`
                 @font-face {
                   font-family: 'iconfont';  /* Project id 5134748 */
                   src: url('//at.alicdn.com/t/c/font_5134748_ltvrkvc21sp.woff2?t=1772913483442') format('woff2'),
@@ -739,16 +829,22 @@
 
     // ================= Main Execution =================
     
-    // Initialize components
-    const configManager = new ConfigManager();
-    const adapter = SiteAdapterFactory.getAdapter(window.location.href);
-    const playerManager = new PlayerManager(configManager);
-    const uiManager = new UIManager(configManager, playerManager, adapter);
+    async function main() {
+        // Initialize components
+        const configManager = new ConfigManager();
+        await configManager.init();
+        
+        const adapter = SiteAdapterFactory.getAdapter(window.location.href);
+        const playerManager = new PlayerManager(configManager);
+        const uiManager = new UIManager(configManager, playerManager, adapter);
 
-    // Preload site-specific data (e.g., iQiyi album info)
-    adapter.preload();
+        // Preload site-specific data (e.g., iQiyi album info)
+        adapter.preload();
 
-    // Initialize UI
-    uiManager.init();
+        // Initialize UI
+        uiManager.init();
+    }
+    
+    main().catch(e => console.error(e));
 
 })();

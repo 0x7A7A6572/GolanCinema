@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "勾栏观影 - Golan Cinema",
+  "version": "1.0.2",
+  "description": "【勾栏听曲，闲坐看戏】漫步瓦舍勾栏，笑看人间大戏。无需碎银几两，亦可入座观影。",
+  "permissions": [
+    "storage"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.iqiyi.com/v_*",
+        "*://v.youku.com/*",
+        "*://*.le.com/*",
+        "*://v.qq.com/*",
+        "*://*.tudou.com/*",
+        "*://*.mgtv.com/*",
+        "*://film.sohu.com/*",
+        "*://*.acfun.cn/v/*",
+        "*://*.bilibili.com/*",
+        "*://vip.1905.com/play/*",
+        "*://vip.pptv.com/show/*",
+        "*://v.yinyuetai.com/video/*",
+        "*://v.yinyuetai.com/playlist/*",
+        "*://*.fun.tv/vplay/*",
+        "*://*.wasu.cn/Play/show/*"
+      ],
+      "js": ["content-bridge.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["golan-main.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
