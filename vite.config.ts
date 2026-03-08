@@ -15,7 +15,11 @@ export default defineConfig({
   plugins: [
     vue(),
     crx({ manifest }),
-    zip({ outDir: 'release', outFileName: `crx-${name}-${version}.zip` }),
+    zip({
+      outDir: 'release',
+      outFileName: `crx-${name}-${version}.zip`,
+      filter: (fileName) => !fileName.includes('.vite'),
+    }),
   ],
   server: {
     cors: {
