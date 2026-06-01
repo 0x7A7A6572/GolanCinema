@@ -46,6 +46,7 @@ function addParser() {
     enabled: true,
   });
   configManager.save();
+  showToast(`接口「${newParserName.value}」已添加`);
   newParserName.value = '';
   newParserUrl.value = '';
 }
@@ -55,6 +56,7 @@ function toggleParser(index: number) {
   if (item) {
     item.enabled = !item.enabled;
     configManager.save();
+    showToast(item.enabled ? `接口「${item.name}」已启用` : `接口「${item.name}」已禁用`);
   }
 }
 
@@ -63,13 +65,16 @@ function togglePin(index: number) {
   if (item) {
     item.pinned = !item.pinned;
     configManager.save();
+    showToast(item.pinned ? `接口「${item.name}」已置顶` : `接口「${item.name}」已取消置顶`);
   }
 }
 
 function deleteParser(index: number) {
+  const item = configManager.state.parserList[index];
   if (confirm('Delete this parser?')) {
     configManager.state.parserList.splice(index, 1);
     configManager.save();
+    showToast(`接口「${item?.name}」已删除`);
   }
 }
 
@@ -86,29 +91,49 @@ function addSelector() {
   if (existing) {
     if (confirm('Overwrite existing rule?')) {
       existing.selector = newSelector.value;
-    } else {
-      return;
+      configManager.save();
+      showToast(`规则「${newHost.value}」已更新`);
     }
+    return;
   } else {
     configManager.state.siteSelectors.push({
       host: newHost.value,
       selector: newSelector.value
     });
+    configManager.save();
+    showToast(`规则「${newHost.value}」已添加`);
   }
-  configManager.save();
+  newHost.value = props.currentHost || window.location.hostname;
+  newSelector.value = '';
 }
 
 function deleteSelector(index: number) {
+  const s = configManager.state.siteSelectors[index];
   if (confirm('Delete this rule?')) {
     configManager.state.siteSelectors.splice(index, 1);
     configManager.save();
+    showToast(`规则「${s?.host}」已删除`);
   }
 }
 
 function resetAll() {
   if (confirm('Reset all settings to default?')) {
     configManager.reset();
+    showToast('已重置所有设置');
   }
+}
+
+const toastMessage = ref('');
+const toastVisible = ref(false);
+let toastTimer: ReturnType<typeof setTimeout> | null = null;
+
+function showToast(msg: string, duration = 2000) {
+  toastMessage.value = msg;
+  toastVisible.value = true;
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toastVisible.value = false;
+  }, duration);
 }
 
 function saveAndClose() {
@@ -222,6 +247,10 @@ function saveAndClose() {
         <button v-if="!isFullPage" @click="saveAndClose" class="tm-btn-primary">保存并关闭</button>
         <button v-else @click="configManager.save()" class="tm-btn-primary">保存</button>
       </div>
+
+      <!-- <transition name="toast-fade"> -->
+        <div v-if="toastVisible" class="tm-toast">{{ toastMessage }}</div>
+      <!-- </transition> -->
     </div>
   </div>
 </template>
@@ -670,5 +699,33 @@ input:checked+.tm-switch-slider:before {
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.tm-toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 200000;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.toast-fade-enter-active,
+.toast-fade-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.toast-fade-enter-from,
+.toast-fade-leave-to {
+  opacity: 0;
+  transform: translateX(-50%) translateY(10px);
 }
 </style>

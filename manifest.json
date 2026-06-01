@@ -8,23 +8,7 @@
   ],
   "content_scripts": [
     {
-      "matches": [
-        "*://*.iqiyi.com/v_*",
-        "*://v.youku.com/*",
-        "*://*.le.com/*",
-        "*://v.qq.com/*",
-        "*://*.tudou.com/*",
-        "*://*.mgtv.com/*",
-        "*://film.sohu.com/*",
-        "*://*.acfun.cn/v/*",
-        "*://*.bilibili.com/*",
-        "*://vip.1905.com/play/*",
-        "*://vip.pptv.com/show/*",
-        "*://v.yinyuetai.com/video/*",
-        "*://v.yinyuetai.com/playlist/*",
-        "*://*.fun.tv/vplay/*",
-        "*://*.wasu.cn/Play/show/*"
-      ],
+      "matches": [],
       "js": ["content-bridge.js"],
       "run_at": "document_end"
     }
