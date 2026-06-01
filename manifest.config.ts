@@ -61,7 +61,6 @@ export default defineManifest({
     },
   ],
   permissions: [
-    'contentSettings',
     'storage',
   ]
 })
