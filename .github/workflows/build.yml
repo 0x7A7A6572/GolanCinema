@@ -21,7 +21,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 'lts/*'
-          cache: npm
 
       - name: 同步版本号（从 tag）
         if: startsWith(github.ref, 'refs/tags/v')
